@@ -50,6 +50,60 @@ def rnorm(n,mu=0,sigma=1):
     sin=np.vectorize(math.sin)
     unif1_array=sqrt(np.dot(-2,log(unif1_array)))
     unif2_array=sin(np.dot(2*math.pi,unif2_array))
-    unif_array=np.multiply(unif1_array,unif2_array)
+    unif_array=sigma*np.multiply(unif1_array,unif2_array)+mu
     return unif_array
 
+def frequency(array,c,direction='s'):
+    '''
+    input param array：随机数序列
+    input param c： 临界值
+    input param direction: 's'小于临界值;'b'大于临界值
+    return: 满足条件的频率
+    '''
+    n=len(array)
+    if n==0:
+        return
+    freq=0
+    if direction=='s':
+        for i in array:
+            if i <=c:
+                freq+=1
+    else:
+        for i in array:
+            if i>=c:
+                freq+=1
+    p=freq/n
+    return p
+    
+def percentile(array,alpha,lower=False):
+    '''
+    input param array: 随机数序列
+    input param alpha: 百分位点
+    input param lower: 下百分位点,默认True
+    return percentile：返回百分位点
+    '''
+    if alpha>1:
+        return
+    array=np.sort(array)
+    n=len(array)
+    if lower==False:
+        ind=int(round(n*alpha))
+    else:
+        ind=int(round(n*(1-alpha)))
+    return array[ind]
+
+
+## simulation
+
+n=1000
+np.random.seed(1)
+x1=runif(n,2,3)
+x2=rexp(n,3)
+x3=rnorm(n,2,2)
+fx=x1**2+x2**2+x3**2
+## calculate P{fx<=10}
+freq=frequency(fx,10)
+## calculate percentile
+perc=percentile(fx,0.85)        
+##
+print('P{fx<=10}: %s, Percentile 85%% : %s'%(freq,perc))
