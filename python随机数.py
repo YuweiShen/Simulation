@@ -92,18 +92,24 @@ def percentile(array,alpha,lower=False):
         ind=int(round(n*(1-alpha)))
     return array[ind]
 
+def mean(array):
+    return(sum(array)/len(array))
 
 ## simulation
 
-n=1000
+n = 1000
 np.random.seed(1)
-x1=runif(n,2,3)
-x2=rexp(n,3)
-x3=rnorm(n,2,2)
-fx=x1**2+x2**2+x3**2
+x1 = runif(n,2,3)
+x2 = rexp(n,1/3)
+x3 = rnorm(n,2,2)
+sqrt = np.vectorize(math.sqrt)
+fx = sqrt(x1**2+x2**2+x3**2)
+## calculate the mean
+m = mean(fx)
 ## calculate P{fx<=10}
-freq=frequency(fx,10)
+freq = frequency(fx,10)
 ## calculate percentile
 perc=percentile(fx,0.85)        
-##
-print('P{fx<=10}: %s, Percentile 85%% : %s'%(freq,perc))
+## result 
+print('P{fx<=10}: %s, Percentile 85%% : %s, Mean : %s '%(freq,perc,m))
+## P{fx<=10}: 1.0, Percentile 85% : 4.830957310134807, Mean : 3.6384043233389343 
